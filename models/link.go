@@ -10,7 +10,7 @@ type Link struct {
 	Title          string    `json:"title"`
 	Content        string    `json:"content"`
 	Password       string    `json:"password"`
-	ExpirationDate time.Time `json:"expiration_date"`
+	ExpirationDate time.Time `json:"expire_date"`
 	UserID         uint      `json:"user_id"`
 	Views          uint      `json:"views"`
 }
