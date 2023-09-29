@@ -32,4 +32,5 @@ func SetupRoutes(app *fiber.App) {
 	collection := api.Group("/")
 	collection.Post("/collect/:id", middleware.Protected(), handler.Collect)
 	collection.Post("/uncollect/:id", middleware.Protected(), handler.Uncollect)
+	collection.Get("/collections", middleware.Protected(), handler.Collections)
 }

@@ -51,3 +51,19 @@ func Uncollect(c *fiber.Ctx) error {
 		"msg":  "Link uncollected successfully",
 	})
 }
+
+func Collections(c *fiber.Ctx) error {
+	user := c.Locals("user").(models.User)
+	db := database.DB
+	var links []models.Link
+	if err := db.Model(&user).Association("Links").Find(&links); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"code": 500,
+			"msg":  "Couldn't get collections",
+		})
+	}
+	return c.JSON(fiber.Map{
+		"code": 200,
+		"data": links,
+	})
+}
