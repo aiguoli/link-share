@@ -33,4 +33,11 @@ func SetupRoutes(app *fiber.App) {
 	collection.Post("/collect/:id", middleware.Protected(), handler.Collect)
 	collection.Post("/uncollect/:id", middleware.Protected(), handler.Uncollect)
 	collection.Get("/collections", middleware.Protected(), handler.Collections)
+
+	// Category
+	category := api.Group("/categories")
+	category.Get("/", handler.GetCategories)
+	category.Post("/", middleware.Protected(), handler.CreateCategory)
+	category.Patch("/:id", middleware.Protected(), handler.UpdateCategory)
+	category.Delete("/:id", middleware.Protected(), handler.DeleteCategory)
 }

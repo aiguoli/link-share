@@ -11,7 +11,12 @@ func GetLink(c *fiber.Ctx) error {
 	id := c.Params("id")
 	db := database.DB
 	var link models.Link
-	db.Find(&link, id)
+	if err := db.Find(&link, id).Error; err != nil {
+		return c.Status(404).JSON(fiber.Map{
+			"code": 404,
+			"msg":  "Link not found",
+		})
+	}
 	return c.JSON(fiber.Map{
 		"code": 200,
 		"data": link,

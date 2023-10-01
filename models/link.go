@@ -12,5 +12,6 @@ type Link struct {
 	Password       string    `json:"password"`
 	ExpirationDate time.Time `json:"expire_date"`
 	UserID         uint      `json:"user_id"`
+	CategoryID     uint      `json:"category_id"`
 	Views          uint      `json:"views"`
 }
