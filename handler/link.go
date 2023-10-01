@@ -7,6 +7,16 @@ import (
 	"time"
 )
 
+func GetLinks(c *fiber.Ctx) error {
+	db := database.DB
+	var links []models.Link
+	db.Find(&links)
+	return c.JSON(fiber.Map{
+		"code": 200,
+		"data": links,
+	})
+}
+
 func GetLink(c *fiber.Ctx) error {
 	id := c.Params("id")
 	db := database.DB

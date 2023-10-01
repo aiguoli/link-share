@@ -23,6 +23,7 @@ func SetupRoutes(app *fiber.App) {
 
 	// Link
 	link := api.Group("/links")
+	link.Get("/", handler.GetLinks)
 	link.Get("/:id", handler.GetLink)
 	link.Post("/", handler.CreateLink)
 	link.Patch("/:id", middleware.Protected(), handler.UpdateLink)
