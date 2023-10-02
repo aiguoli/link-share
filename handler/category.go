@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 	"link-share/database"
 	"link-share/models"
 	"os"
@@ -19,7 +20,14 @@ func GetCategories(c *fiber.Ctx) error {
 
 func CreateCategory(c *fiber.Ctx) error {
 	db := database.DB
-	user := c.Locals("user").(models.User)
+	userId := c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)["user_id"].(float64)
+	var user models.User
+	if err := db.Find(&user, userId).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"code": 500,
+			"msg":  "User not found!",
+		})
+	}
 	if user.Email != os.Getenv("ADMIN_EMAIL") {
 		return c.Status(403).JSON(fiber.Map{
 			"code": 403,
@@ -27,7 +35,7 @@ func CreateCategory(c *fiber.Ctx) error {
 		})
 	}
 	var category models.Category
-	if err := c.BodyParser(&category);err != nil {
+	if err := c.BodyParser(&category); err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"code": 500,
 			"msg":  "Couldn't parse JSON",
@@ -44,7 +52,14 @@ func CreateCategory(c *fiber.Ctx) error {
 func UpdateCategory(c *fiber.Ctx) error {
 	id := c.Params("id")
 	db := database.DB
-	user := c.Locals("user").(models.User)
+	userId := c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)["user_id"].(float64)
+	var user models.User
+	if err := db.Find(&user, userId).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"code": 500,
+			"msg":  "User not found!",
+		})
+	}
 	if user.Email != os.Getenv("ADMIN_EMAIL") {
 		return c.Status(403).JSON(fiber.Map{
 			"code": 403,
@@ -53,7 +68,7 @@ func UpdateCategory(c *fiber.Ctx) error {
 	}
 	var category models.Category
 	var newCategory models.Category
-	if err := c.BodyParser(&newCategory);err != nil {
+	if err := c.BodyParser(&newCategory); err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"code": 500,
 			"msg":  "Couldn't parse JSON",
@@ -72,7 +87,14 @@ func UpdateCategory(c *fiber.Ctx) error {
 func DeleteCategory(c *fiber.Ctx) error {
 	id := c.Params("id")
 	db := database.DB
-	user := c.Locals("user").(models.User)
+	userId := c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)["user_id"].(float64)
+	var user models.User
+	if err := db.Find(&user, userId).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"code": 500,
+			"msg":  "User not found!",
+		})
+	}
 	if user.Email != os.Getenv("ADMIN_EMAIL") {
 		return c.Status(403).JSON(fiber.Map{
 			"code": 403,

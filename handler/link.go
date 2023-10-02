@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 	"link-share/database"
 	"link-share/models"
 	"time"
@@ -43,7 +44,7 @@ func CreateLink(c *fiber.Ctx) error {
 		})
 	}
 	if c.Locals("user") != nil {
-		link.UserID = c.Locals("user").(models.User).ID
+		link.UserID = uint(c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)["user_id"].(float64))
 	}
 	link.ExpirationDate, _ = time.Parse("2006-01-02", c.FormValue("expiration_date"))
 	db.Create(&link)
@@ -67,8 +68,8 @@ func UpdateLink(c *fiber.Ctx) error {
 			"msg":  "Couldn't parse JSON",
 		})
 	}
-	user := c.Locals("user").(models.User)
-	if err := db.First(&link, "id = ? AND user_id = ?", id, user.ID).Error; err != nil {
+	userId := c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)["user_id"]
+	if err := db.First(&link, "id = ? AND user_id = ?", id, userId).Error; err != nil {
 		return c.Status(404).JSON(fiber.Map{
 			"code": 404,
 			"msg":  "Link not found",
@@ -87,8 +88,8 @@ func DeleteLink(c *fiber.Ctx) error {
 	db := database.DB
 
 	var link models.Link
-	user := c.Locals("user").(models.User)
-	if err := db.First(&link, "id = ? AND user_id = ?", id, user.ID).Error; err != nil {
+	userId := c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)["user_id"]
+	if err := db.First(&link, "id = ? AND user_id = ?", id, userId).Error; err != nil {
 		return c.Status(404).JSON(fiber.Map{
 			"code": 404,
 			"msg":  "Link not found",
