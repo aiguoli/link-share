@@ -26,6 +26,7 @@ func SetupRoutes(app *fiber.App) {
 	link.Get("/", handler.GetLinks)
 	link.Get("/:id", handler.GetLink)
 	link.Post("/", handler.CreateLink)
+	link.Post("/:id/visit", middleware.Protected(), handler.IncrementViews)
 	link.Patch("/:id", middleware.Protected(), handler.UpdateLink)
 	link.Delete("/:id", middleware.Protected(), handler.DeleteLink)
 

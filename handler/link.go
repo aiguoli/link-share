@@ -55,6 +55,25 @@ func CreateLink(c *fiber.Ctx) error {
 	})
 }
 
+func IncrementViews(c *fiber.Ctx) error {
+	id := c.Params("id")
+	db := database.DB
+	var link models.Link
+	if err := db.First(&link, id).Error; err != nil {
+		return c.Status(404).JSON(fiber.Map{
+			"code": 404,
+			"msg":  "Link not found",
+		})
+	}
+	link.Views++
+	db.Save(&link)
+	return c.JSON(fiber.Map{
+		"code": 200,
+		"msg":  "Link views incremented",
+		"data": link,
+	})
+}
+
 func UpdateLink(c *fiber.Ctx) error {
 	id := c.Params("id")
 	db := database.DB
